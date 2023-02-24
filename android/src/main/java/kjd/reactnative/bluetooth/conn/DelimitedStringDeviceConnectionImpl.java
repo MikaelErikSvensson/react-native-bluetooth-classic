@@ -1,6 +1,8 @@
 package kjd.reactnative.bluetooth.conn;
 
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.IOException;
@@ -71,7 +73,17 @@ public class DelimitedStringDeviceConnectionImpl extends AbstractDeviceConnectio
                 String.format("Received %d bytes from device %s", bytes.length, getDevice().getAddress()));
 
         synchronized(mBuffer) {
-            mBuffer.append(new String(bytes, mCharset));
+            // mBuffer.append(new String(bytes, mCharset));
+
+            // convert each byte in bytes to unsigned integer and then convert each unsigned integer to char (char is always in ascii)
+            // build string from chars and add this string to buffer
+            // this is necessary to get a string in ascii from unsigned ints since Java uses only signed integers
+            String msg = "";
+            for (int i = 0; i < bytes.length; i++) {
+                char ch = (char)Byte.toUnsignedInt(bytes[i]);
+                msg += ch;
+            }
+            mBuffer.append(msg);
 
             if (mOnDataReceived != null) {
                 Log.d(this.getClass().getSimpleName(),
