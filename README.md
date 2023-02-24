@@ -4,6 +4,10 @@ React Native Bluetooth Classic is meant to bridge the gap found with regards to 
 
 Based off the [react-native-bluetooth-serial](https://github.com/rusel1989/react-native-bluetooth-serial) port, and updated to replace [CoreBluetooth](https://developer.apple.com/documentation/corebluetooth) (BLE) on IOS with [External Accessory](https://developer.apple.com/documentation/externalaccessory/eaaccessory).
 
+## Info
+
+This purpose of this fork is to handle bugs related to negative bytes not being correctly translated and received in React Native.
+
 ## Versions
 
 Since there seem to be some breaking changes introduced within React Native 0.60 and I'm not entirely sure how or if these changes will affect this project; For that reason I feel it's important to start running with a number of release branches (for the time being) just in case things go down. In the following table, the React Native version is the lowest version (from package.json).
