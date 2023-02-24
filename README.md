@@ -6,7 +6,11 @@ Based off the [react-native-bluetooth-serial](https://github.com/rusel1989/react
 
 ## Info
 
-This purpose of this fork is to handle bugs related to negative bytes not being correctly translated and received in React Native.
+The purpose of this fork is to handle bugs related to negative bytes not being correctly handled and passed to React Native in the original react-native-bluetooth-classic library. This happens because Java does not support unsigned data types.
+
+For example, if the byte array received in native code contains a byte with value -2, you would expect its value to be 254 unsigned. If you convert the received string in React Native to a buffer it’s value will be 239, not 254.
+
+This fork avoids this by converting each byte received to unsigned using Byte.toUnsignedInt(), and then converting each unsigned integer to char (always ASCII) and then finally assembling the chars into a string and adding it to the buffer. Data received in React Native will always be ASCII using this fork.
 
 ## Versions
 
