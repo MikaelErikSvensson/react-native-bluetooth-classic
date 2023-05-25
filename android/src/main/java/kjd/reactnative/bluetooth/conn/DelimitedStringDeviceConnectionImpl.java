@@ -148,7 +148,7 @@ public class DelimitedStringDeviceConnectionImpl extends AbstractDeviceConnectio
             } else {
                 int index = mBuffer.indexOf(mDelimiter, 0);
                 if (index > -1) {
-                    message = mBuffer.substring(0, index);
+                    message = mBuffer.substring(0, index + mDelimiter.length());
                     mBuffer.delete(0, index + mDelimiter.length());
                 }   
             }            
