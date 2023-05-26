@@ -146,13 +146,24 @@ public class DelimitedStringDeviceConnectionImpl extends AbstractDeviceConnectio
                 message = mBuffer.substring(0, mBuffer.length());
                 mBuffer.delete(0, mBuffer.length());
             } else {
+                int eotIndex = mBuffer.indexOf("\u0004", 0);
+                int canIndex = mBuffer.indexOf("\u0018", 0);
                 int index = mBuffer.indexOf(mDelimiter, 0);
                 if (index > -1) {
                     message = mBuffer.substring(0, index + mDelimiter.length());
                     mBuffer.delete(0, index + mDelimiter.length());
-                }   
-            }            
+                }
+                else if (eotIndex > -1) {
+                    message = mBuffer.substring(0, eotIndex + 1);
+                    mBuffer.delete(0, eotIndex + 1);
+                }
+                else if (canIndex > -1) {
+                    message = mBuffer.substring(0, canIndex + 1);
+                    mBuffer.delete(0, canIndex + 1);
+                }
+            }
             return message;
         }        
     }
+    
 }
