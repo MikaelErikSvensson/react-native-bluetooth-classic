@@ -84,17 +84,6 @@ export default class BluetoothModule {
    * @param address address from which to read
    * @return Promise resovled with individual read
    */
-  readBytesFromDevice(address: string, amount: number): Promise<string> {
-    return this._nativeModule.readBytesFromDevice(address, amount);
-  }
-
-  /**
-   * Read from the specified device.  This uses the configured device read
-   * functionality - see the Native documentation for how that is configured.
-   *
-   * @param address address from which to read
-   * @return Promise resovled with individual read
-   */
   readFromDevice(address: string): Promise<string> {
     return this._nativeModule.readFromDevice(address);
   }

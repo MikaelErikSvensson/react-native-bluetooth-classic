@@ -59,18 +59,6 @@ public interface DeviceConnection extends Runnable {
      */
     boolean clear();
 
-        /**
-     * Performs a manual read of the {@link NativeDevice} or backing Buffer.  Again
-     * String(s) are used as the transfer data, although in this case there is no
-     * requirement on Base64, you're free to perform any conversion from
-     * original data as needed; as it will be the implementation decoding
-     * it within React Native JS.
-     *
-     * @param amount
-     * @return
-     */
-    String readBytes(int amount);
-
     /**
      * Performs a manual read of the {@link NativeDevice} or backing Buffer.  Again
      * String(s) are used as the transfer data, although in this case there is no

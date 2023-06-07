@@ -127,33 +127,6 @@ public class DelimitedStringDeviceConnectionImpl extends AbstractDeviceConnectio
         }
     }
 
-
-    /**
-     * Reads the next message in from the buffer, based on the configured delimiter (dropping the
-     * delimiter) and then removing the data from the Buffer.  This only returns the first available
-     * message and should be called in conjunction with {@link #available()}.
-     * 
-     * This method is `synchronized` on the `buffer`.
-     *
-     * @return the next message from the buffer or the full buffer if blank/null delimiter
-     * @throws IOException if an error occurs during reading
-     */
-    @Override
-    public String readBytes(int amount) {
-        synchronized(mBuffer) {
-            String message = null;
-
-            try {
-                message = mBuffer.substring(0, amount);
-                mBuffer.delete(0, amount);
-            }
-            catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Error reading bytes from buffer", e);
-            }            
-            return message;
-        }        
-    }
-
     /**
      * Reads the next message in from the buffer, based on the configured delimiter (dropping the
      * delimiter) and then removing the data from the Buffer.  This only returns the first available

@@ -98,16 +98,6 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
   }
 
   /**
-   * Read X amount of bytes from the device.  This depends completely on the
-   * implementation of DeviceConnection.
-   *
-   * @return Promise resolved with the message content (not including delimited)
-   */
-  async readBytes(amount: number): Promise<String> {
-    return this._bluetoothModule.readBytesFromDevice(this.address, amount);
-  }
-
-  /**
    * Clear the current device buffer - this will generally only be required when using
    * manual reads (as `onRead` should continually keep the buffer clean).
    *
