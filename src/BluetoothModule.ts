@@ -1,12 +1,5 @@
-import {
-  NativeEventEmitter,
-  EventSubscriptionVendor,
-  Platform,
-  EventSubscription,
-} from "react-native";
-import RNBluetoothClassicModule, {
-  StandardOptions,
-} from "./BluetoothNativeModule";
+import { NativeEventEmitter, EventSubscriptionVendor, Platform, EventSubscription } from "react-native";
+import RNBluetoothClassicModule, { StandardOptions } from "./BluetoothNativeModule";
 import BluetoothDevice from "./BluetoothDevice";
 import BluetoothNativeDevice from "./BluetoothNativeDevice";
 import {
@@ -82,6 +75,17 @@ export default class BluetoothModule {
    */
   availableFromDevice(address: string): Promise<number> {
     return this._nativeModule.availableFromDevice(address);
+  }
+
+  /**
+   * Read from the specified device.  This uses the configured device read
+   * functionality - see the Native documentation for how that is configured.
+   *
+   * @param address address from which to read
+   * @return Promise resovled with individual read
+   */
+  readBytesFromDevice(address: string, amount: number): Promise<string> {
+    return this._nativeModule.readBytesFromDevice(address, amount);
   }
 
   /**
@@ -167,17 +171,11 @@ export default class BluetoothModule {
    * @param address the address to which we are connecting
    * @param properties extra properties required for the connection.
    */
-  async connectToDevice<T extends StandardOptions>(
-    address: string,
-    options?: T
-  ): Promise<BluetoothDevice> {
+  async connectToDevice<T extends StandardOptions>(address: string, options?: T): Promise<BluetoothDevice> {
     // Comming from the Java world this is nuts - not being able to assign anything to
     // options because it's a <T extends StandardOptions> even with something that matches
     // the StandardOptions interface
-    let connected = await this._nativeModule.connectToDevice(
-      address,
-      options || {}
-    );
+    let connected = await this._nativeModule.connectToDevice(address, options || {});
     return new BluetoothDevice(connected, this);
   }
 
@@ -207,22 +205,9 @@ export default class BluetoothModule {
   writeToDevice(
     address: string,
     message: string | Buffer,
-    encoding?:
-      | "utf-8"
-      | "ascii"
-      | "utf8"
-      | "utf16le"
-      | "ucs2"
-      | "ucs-2"
-      | "base64"
-      | "latin1"
-      | "binary"
-      | "hex"
-      | undefined
+    encoding?: "utf-8" | "ascii" | "utf8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex" | undefined
   ): Promise<boolean> {
-    let data = Buffer.isBuffer(message)
-      ? (message as Buffer)
-      : Buffer.from(message, encoding);
+    let data = Buffer.isBuffer(message) ? (message as Buffer) : Buffer.from(message, encoding);
     return this._nativeModule.writeToDevice(address, data.toString("base64"));
   }
 
@@ -263,9 +248,7 @@ export default class BluetoothModule {
    */
   async pairDevice(address: string): Promise<BluetoothDevice> {
     if (Platform.OS == "ios") throw new Error("Method not implemented.");
-    let paired: BluetoothNativeDevice = await this._nativeModule.pairDevice(
-      address
-    );
+    let paired: BluetoothNativeDevice = await this._nativeModule.pairDevice(address);
     return new BluetoothDevice(paired, this);
   }
 
@@ -291,9 +274,7 @@ export default class BluetoothModule {
    */
   async accept(properties: Map<string, object>): Promise<BluetoothDevice> {
     if (Platform.OS == "ios") throw new Error("Method not implemented.");
-    let paired: BluetoothNativeDevice = await this._nativeModule.accept(
-      properties
-    );
+    let paired: BluetoothNativeDevice = await this._nativeModule.accept(properties);
     return new BluetoothDevice(paired, this);
   }
   /**
@@ -352,13 +333,8 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onBluetoothEnabled(
-    listener: BluetoothEventListener<StateChangeEvent>
-  ): BluetoothEventSubscription {
-    return this.createBluetoothEventSubscription(
-      BluetoothEventType.BLUETOOTH_ENABLED,
-      listener
-    );
+  onBluetoothEnabled(listener: BluetoothEventListener<StateChangeEvent>): BluetoothEventSubscription {
+    return this.createBluetoothEventSubscription(BluetoothEventType.BLUETOOTH_ENABLED, listener);
   }
 
   /**
@@ -367,13 +343,8 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onBluetoothDisabled(
-    listener: BluetoothEventListener<StateChangeEvent>
-  ): BluetoothEventSubscription {
-    return this.createBluetoothEventSubscription(
-      BluetoothEventType.BLUETOOTH_DISABLED,
-      listener
-    );
+  onBluetoothDisabled(listener: BluetoothEventListener<StateChangeEvent>): BluetoothEventSubscription {
+    return this.createBluetoothEventSubscription(BluetoothEventType.BLUETOOTH_DISABLED, listener);
   }
 
   /**
@@ -381,17 +352,9 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onStateChanged(
-    listener: BluetoothEventListener<StateChangeEvent>
-  ): BluetoothEventSubscription {
-    let enabledSubscription = this._eventEmitter.addListener(
-      BluetoothEventType.BLUETOOTH_ENABLED,
-      listener
-    );
-    let disabledSubscription = this._eventEmitter.addListener(
-      BluetoothEventType.BLUETOOTH_DISABLED,
-      listener
-    );
+  onStateChanged(listener: BluetoothEventListener<StateChangeEvent>): BluetoothEventSubscription {
+    let enabledSubscription = this._eventEmitter.addListener(BluetoothEventType.BLUETOOTH_ENABLED, listener);
+    let disabledSubscription = this._eventEmitter.addListener(BluetoothEventType.BLUETOOTH_DISABLED, listener);
 
     return {
       remove() {
@@ -406,13 +369,8 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onDeviceConnected(
-    listener: BluetoothEventListener<BluetoothDeviceEvent>
-  ): BluetoothEventSubscription {
-    return this.createBluetoothEventSubscription(
-      BluetoothEventType.DEVICE_CONNECTED,
-      listener
-    );
+  onDeviceConnected(listener: BluetoothEventListener<BluetoothDeviceEvent>): BluetoothEventSubscription {
+    return this.createBluetoothEventSubscription(BluetoothEventType.DEVICE_CONNECTED, listener);
   }
 
   /**
@@ -424,13 +382,8 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onDeviceDisconnected(
-    listener: BluetoothEventListener<BluetoothDeviceEvent>
-  ): BluetoothEventSubscription {
-    return this.createBluetoothEventSubscription(
-      BluetoothEventType.DEVICE_DISCONNECTED,
-      listener
-    );
+  onDeviceDisconnected(listener: BluetoothEventListener<BluetoothDeviceEvent>): BluetoothEventSubscription {
+    return this.createBluetoothEventSubscription(BluetoothEventType.DEVICE_DISCONNECTED, listener);
   }
 
   /**
@@ -441,10 +394,7 @@ export default class BluetoothModule {
    * @param address device address to which we will start listening
    * @param listener onReadListener
    */
-  onDeviceRead(
-    address: string,
-    listener: BluetoothEventListener<BluetoothDeviceReadEvent>
-  ): BluetoothEventSubscription {
+  onDeviceRead(address: string, listener: BluetoothEventListener<BluetoothDeviceReadEvent>): BluetoothEventSubscription {
     let eventType = `${BluetoothEventType.DEVICE_READ}@${address}`;
     this._nativeModule.addListener(eventType);
 
@@ -463,13 +413,8 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onError(
-    listener: BluetoothEventListener<BluetoothDeviceEvent>
-  ): BluetoothEventSubscription {
-    return this.createBluetoothEventSubscription(
-      BluetoothEventType.ERROR,
-      listener
-    );
+  onError(listener: BluetoothEventListener<BluetoothDeviceEvent>): BluetoothEventSubscription {
+    return this.createBluetoothEventSubscription(BluetoothEventType.ERROR, listener);
   }
 
   /**
@@ -481,13 +426,8 @@ export default class BluetoothModule {
    *
    * @param listener
    */
-  onDeviceDiscovered(
-    listener: BluetoothEventListener<BluetoothDeviceEvent>
-  ): BluetoothEventSubscription {
-    return this.createBluetoothEventSubscription(
-      BluetoothEventType.DEVICE_DISCOVERED,
-      listener
-    );
+  onDeviceDiscovered(listener: BluetoothEventListener<BluetoothDeviceEvent>): BluetoothEventSubscription {
+    return this.createBluetoothEventSubscription(BluetoothEventType.DEVICE_DISCOVERED, listener);
   }
 
   /**

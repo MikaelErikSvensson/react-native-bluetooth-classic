@@ -1,11 +1,6 @@
 import BluetoothModule from "./BluetoothModule";
 import BluetoothNativeDevice from "./BluetoothNativeDevice";
-import {
-  BluetoothEvent,
-  BluetoothEventListener,
-  BluetoothDeviceReadEvent,
-  BluetoothEventSubscription,
-} from "./BluetoothEvent";
+import { BluetoothEvent, BluetoothEventListener, BluetoothDeviceReadEvent, BluetoothEventSubscription } from "./BluetoothEvent";
 import { StandardOptions } from "./BluetoothNativeModule";
 
 /**
@@ -27,10 +22,7 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
   rssi: Number;
   extra: Map<string, Object>;
 
-  constructor(
-    nativeDevice: BluetoothNativeDevice,
-    bluetoothModule: BluetoothModule
-  ) {
+  constructor(nativeDevice: BluetoothNativeDevice, bluetoothModule: BluetoothModule) {
     this._bluetoothModule = bluetoothModule;
     this._nativeDevice = nativeDevice;
 
@@ -56,10 +48,7 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
   async connect<T extends StandardOptions>(options?: T): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
-        let connected = await this._bluetoothModule.connectToDevice(
-          this.address,
-          options
-        );
+        let connected = await this._bluetoothModule.connectToDevice(this.address, options);
         resolve(!!connected);
       } catch (err) {
         reject(err);
@@ -107,7 +96,17 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
   async read(): Promise<String> {
     return this._bluetoothModule.readFromDevice(this.address);
   }
-  
+
+  /**
+   * Read X amount of bytes from the device.  This depends completely on the
+   * implementation of DeviceConnection.
+   *
+   * @return Promise resolved with the message content (not including delimited)
+   */
+  async readBytes(amount: number): Promise<String> {
+    return this._bluetoothModule.readBytesFromDevice(this.address, amount);
+  }
+
   /**
    * Clear the current device buffer - this will generally only be required when using
    * manual reads (as `onRead` should continually keep the buffer clean).
@@ -128,18 +127,7 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
    */
   async write(
     data: string | Buffer,
-    encoding?:
-      | "utf-8"
-      | "ascii"
-      | "utf8"
-      | "utf16le"
-      | "ucs2"
-      | "ucs-2"
-      | "base64"
-      | "latin1"
-      | "binary"
-      | "hex"
-      | undefined
+    encoding?: "utf-8" | "ascii" | "utf8" | "utf16le" | "ucs2" | "ucs-2" | "base64" | "latin1" | "binary" | "hex" | undefined
   ): Promise<boolean> {
     return this._bluetoothModule.writeToDevice(this.address, data, encoding);
   }
@@ -151,9 +139,7 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
    *
    * @param listener the BluetoothEventListener which will receive incoming data
    */
-  onDataReceived(
-    listener: BluetoothEventListener<BluetoothDeviceReadEvent>
-  ): BluetoothEventSubscription {
+  onDataReceived(listener: BluetoothEventListener<BluetoothDeviceReadEvent>): BluetoothEventSubscription {
     return this._bluetoothModule.onDeviceRead(this.address, listener);
   }
 }
