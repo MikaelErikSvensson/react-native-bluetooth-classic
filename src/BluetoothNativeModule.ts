@@ -90,7 +90,25 @@ export default interface BluetoothNativeModule {
    * @return Promise resolved with bytes available for read
    */
   availableFromDevice(address: string): Promise<number>;
-
+  /**
+   * Attempts to read from the device.   Will always resolve, whether empty or
+   * not.  string response should be parsed/decoded appropriately based on your
+   * device and configuration.
+   *
+   * @param address address from which we will read
+   * @param amount how many bytes/chars to read
+   * @return Promise resolved with next available message or data
+   */
+  readMultipleFromDevice(address: string, amount: number): Promise<string>;
+  /**
+   * Attempts to read from the device.   Will always resolve, whether empty or
+   * not.  string response should be parsed/decoded appropriately based on your
+   * device and configuration.
+   *
+   * @param address address from which we will read
+   * @return Promise resolved with next available message or data
+   */
+  readOneFromDevice(address: string): Promise<string>;
   /**
    * Attempts to read from the device.   Will always resolve, whether empty or
    * not.  string response should be parsed/decoded appropriately based on your

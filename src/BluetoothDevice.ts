@@ -87,6 +87,28 @@ export default class BluetoothDevice implements BluetoothNativeDevice {
   }
 
   /**
+   * Read X bytes/chars from the device.  This depends completely on the
+   * implementation of DeviceConnection.  The standard implemenation is based on delimited
+   * String(s) so this will return 1 delimtied message.
+   *
+   * @return Promise resolved with the message content (not including delimited)
+   */
+  async readMultiple(amount: number): Promise<String> {
+    return this._bluetoothModule.readMultipleFromDevice(this.address, amount);
+  }
+
+  /**
+   * Read an individual byte/char from the device.  This depends completely on the
+   * implementation of DeviceConnection.  The standard implemenation is based on delimited
+   * String(s) so this will return 1 delimtied message.
+   *
+   * @return Promise resolved with the message content (not including delimited)
+   */
+  async readOne(): Promise<String> {
+    return this._bluetoothModule.readOneFromDevice(this.address);
+  }
+
+  /**
    * Read an individual message/data package from the device.  This depends completely on the
    * implementation of DeviceConnection.  The standard implemenation is based on delimited
    * String(s) so this will return 1 delimtied message.

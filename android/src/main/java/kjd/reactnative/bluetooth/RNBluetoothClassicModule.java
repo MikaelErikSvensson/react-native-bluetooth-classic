@@ -911,6 +911,48 @@ public class RNBluetoothClassicModule
     }
 
     /**
+     * Attempts to read from the device.  One byte/char is read at a time, and then removed from the buffer.
+     *
+     * @param address device address to which we wish to read
+     * @param promise resolves with data, could be null or 0 length
+     */
+    @ReactMethod
+    @SuppressWarnings("unused")
+    public void readMultipleFromDevice(String address, double amount, Promise promise) {
+        if (!checkBluetoothAdapter()) {
+            promise.reject(Exceptions.BLUETOOTH_NOT_ENABLED.name(),
+                    Exceptions.BLUETOOTH_NOT_ENABLED.message());
+        } else if (!mConnections.containsKey(address)) {
+            promise.reject(Exceptions.NOT_CURRENTLY_CONNECTED.name(),
+                    Exceptions.NOT_CURRENTLY_CONNECTED.message(address));
+        } else {
+            String message = mConnections.get(address).readMultiple(amount);
+            promise.resolve(message);
+        }
+    }
+
+    /**
+     * Attempts to read from the device.  One byte/char is read at a time, and then removed from the buffer.
+     *
+     * @param address device address to which we wish to read
+     * @param promise resolves with data, could be null or 0 length
+     */
+    @ReactMethod
+    @SuppressWarnings("unused")
+    public void readOneFromDevice(String address, Promise promise) {
+        if (!checkBluetoothAdapter()) {
+            promise.reject(Exceptions.BLUETOOTH_NOT_ENABLED.name(),
+                    Exceptions.BLUETOOTH_NOT_ENABLED.message());
+        } else if (!mConnections.containsKey(address)) {
+            promise.reject(Exceptions.NOT_CURRENTLY_CONNECTED.name(),
+                    Exceptions.NOT_CURRENTLY_CONNECTED.message(address));
+        } else {
+            String message = mConnections.get(address).readOne();
+            promise.resolve(message);
+        }
+    }
+
+    /**
      * Attempts to read from the device.  The full buffer is read (then cleared) without using the
      * mDelimiter.  Note - there will never be data within the buffer if the application is currently
      * registered to receive read events.
