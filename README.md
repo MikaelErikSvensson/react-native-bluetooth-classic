@@ -16,6 +16,9 @@ Since there seem to be some breaking changes introduced within React Native 0.60
 
 If this breaks in a newer version of React Native, Android or IOS please open an issue. Not sure what the resulting versions will (or should be) since `1.0.x (0.60.0)`, `2.0.x (0.64.0)` for example seems weird. Although maybe `1.60.0` and `1.64.0` is pretty apparent to which version needs to be used?
 
+## Fork Info
+I forked this project because I was getting a pod install error that was fixed by adding @mickesvensson.podspec, but it didn't seem like either of the authors were very active judging by github issues. If either kenjdavidson or bybrick-elevate want this removed I will do so immediately.
+
 ## Getting started
 
 ### Install from NPM
