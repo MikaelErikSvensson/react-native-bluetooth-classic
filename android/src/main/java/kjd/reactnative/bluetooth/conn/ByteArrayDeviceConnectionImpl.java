@@ -75,7 +75,7 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
     }
 
       /**
-     * Reads X bytes into a Base64 encoded String for transfer back to React Native
+     * Reads specified amount of bytes into a Base64 encoded String for transfer back to React Native
      * bridge.
      *
      * @return the next message from the buffer
@@ -90,7 +90,6 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
         mBuffer.get(arr, 0, (int)amount);
         String message = Base64.encodeToString(arr, Base64.DEFAULT);
         clear();
-
         return message;
     }
 
@@ -108,7 +107,6 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
         mBuffer.get(arr[0]);
         String message = Base64.encodeToString(arr, Base64.DEFAULT);
         clear();
-
         return message;
     }
 
@@ -126,7 +124,6 @@ public class ByteArrayDeviceConnectionImpl extends AbstractDeviceConnection {
         mBuffer.get(arr);
         String message = Base64.encodeToString(arr, Base64.DEFAULT);
         clear();
-
         return message;
     }
 

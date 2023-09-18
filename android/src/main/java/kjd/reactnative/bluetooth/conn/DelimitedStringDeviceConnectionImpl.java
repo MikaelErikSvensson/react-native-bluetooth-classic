@@ -128,20 +128,19 @@ public class DelimitedStringDeviceConnectionImpl extends AbstractDeviceConnectio
     }
 
     /**
-     * Reads the next X chars from the buffer, based on the configured delimiter (dropping the
-     * delimiter) and then removing the data from the Buffer.  This only returns the first available
-     * message and should be called in conjunction with {@link #available()}.
-     * 
+     * Reads specified amount of characters from the buffer.
+     * This only returns the amount of characters specified if the amount is higher than then remaining characters in the buffer. Otherwise the remainder of the buffer is returned.
+     * Should be called in conjunction with {@link #available()}.
      * This method is `synchronized` on the `buffer`.
      *
-     * @param amount the number of chars to read
-     * @return the next message from the buffer or the full buffer if blank/null delimiter
+     * @param amount the number of characters to read
+     * @return the specified amount of characters or the remainder of the buffer
      * @throws IOException if an error occurs during reading
      */
     @Override
     public String readMultiple(double amount) {
         synchronized(mBuffer) {
-            String message = null;
+            String message = "";
             if (mBuffer.length() > (int)amount) {
                 message = mBuffer.substring(0, (int)amount);
                 mBuffer.delete(0, (int)amount);
@@ -150,27 +149,27 @@ public class DelimitedStringDeviceConnectionImpl extends AbstractDeviceConnectio
                 message = mBuffer.substring(0, mBuffer.length());
                 mBuffer.delete(0, mBuffer.length());
             }
-
             return message;
-        }        
+        }       
     }
 
     /**
-     * Reads the next char from the buffer, based on the configured delimiter (dropping the
-     * delimiter) and then removing the data from the Buffer.  This only returns the first available
-     * message and should be called in conjunction with {@link #available()}.
+     * Reads the next character from the buffer. This only returns the first available
+     * character and should be called in conjunction with {@link #available()}.
      * 
      * This method is `synchronized` on the `buffer`.
      *
-     * @return the next message from the buffer or the full buffer if blank/null delimiter
+     * @return the next character from the buffer
      * @throws IOException if an error occurs during reading
      */
     @Override
     public String readOne() {
         synchronized(mBuffer) {
-            String message = null;
-            message = mBuffer.substring(0, 1);
-            mBuffer.delete(0, 1);
+            String message = "";
+            if (mBuffer.length() > 0) {
+                message = mBuffer.substring(0, 1);
+                mBuffer.delete(0, 1);
+            }
             return message;
         }        
     }
